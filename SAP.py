@@ -14,7 +14,7 @@ while True:
         lst = inp.split(", ")
         lst = sorted(lst)
     elif inp[0:3] != "172":
-        raise ValueError("Please only enter the 172 IPS")
+        raise ValueError("Please only enter the 172. IPs")
     elif len(inp) == 11:
         lst.append(inp[7] + "0" + inp[9:])
     elif len(inp) == 10:
