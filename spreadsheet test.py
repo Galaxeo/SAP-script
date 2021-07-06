@@ -12,8 +12,8 @@ client = gspread.authorize(creds)
 
 # Find a workbook by name and open the first sheet
 # Make sure you use the right name here.
-sheet = client.open("UE Locations for AT&T and pCell Testing at SAP").sheet1
-
+sheet = client.open_by_key("1fy6qiIv6CoGAG4C7EOaUrRgKjJBttqCsQoQhwZzgXU8").sheet1
 # Extract and print all of the values
 list_of_hashes = sheet.get_all_records()
-print(list_of_hashes)
+for item in list_of_hashes:
+    print(item["Phone IP"], "Section", item["Section"], "Row", item["Row"])
