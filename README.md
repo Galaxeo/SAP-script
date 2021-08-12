@@ -6,7 +6,7 @@ Please keep in mind that acceptable forms are as such:
   1. List of phone #s in a comma sepearted list as such: 
  	
 	1023, 1034, 213, 523, ...
-  3. List of IPs copy pasted as such:
+  2. List of IPs copy pasted as such:
 	
 	172.16.0.251
 	
