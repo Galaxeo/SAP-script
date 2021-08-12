@@ -1,0 +1,112 @@
+Index: README.md
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># Justin's Projects\r\nSome of the projects I've done\r\n\r\nSAP Script - Python script made to take an input (in our case, phone #s or IPs), search a CSV (spreadsheets WIP), and output the corresponding values (which in our case were phone locations/positions) that are sorted in a way to assist the interns' workflows.\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/README.md b/README.md
+--- a/README.md	(revision ea1f0013256cfaed0459efed3261176cb5caf891)
++++ b/README.md	(date 1625593638922)
+@@ -1,4 +1,4 @@
+ # Justin's Projects
+ Some of the projects I've done
+ 
+-SAP Script - Python script made to take an input (in our case, phone #s or IPs), search a CSV (spreadsheets WIP), and output the corresponding values (which in our case were phone locations/positions) that are sorted in a way to assist the interns' workflows.
++SAP Script - Python script made to take an input (in our case, phone #s or IPs), search a CSV (spreadsheets WIP), and output the corresponding values (which in our case were phone locations/positions) that are sorted in a way to assist the interns' workflows. While doing this, I learned how to use the Google Sheets API and the Google Cloud Console at a very basic level, while also attempting to implement pandas, but instead used a dictionary as given by the gspread package when collecting data from a speadsheet.
+Index: SAP.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from operator import itemgetter\r\nimport csv\r\nf = open(r\"C:\\Users\\Justin\\Downloads\\UE Locations for AT&T and pCell Testing at SAP  - June 29, 2021.csv\", \"r\")\r\ncsv_f = csv.reader(f)\r\ndatalist = list(csv_f)\r\nlst = []\r\nreturnlst = []\r\nprint(\"Enter the # in a comma seperated list or the IPs, then enter 'done' when done: \")\r\nwhile True:\r\n    inp = input()\r\n    if inp.lower() == \"done\":\r\n        break\r\n    elif \",\" in inp:\r\n        lst = inp.split(\", \")\r\n        lst = sorted(lst)\r\n    elif inp[0:3] != \"172\":\r\n        raise ValueError(\"Please only enter the 172. IPs\")\r\n    elif len(inp) == 11:\r\n        lst.append(inp[7] + \"0\" + inp[9:])\r\n    elif len(inp) == 10:\r\n        lst.append(inp[7] + \"00\" + inp[9])\r\n    elif len(inp) == 12:\r\n        if inp[7] == \"0\":\r\n            lst.append(inp[9:])\r\n        else:\r\n            lst.append(inp[7] + inp[9:])\r\nlst = sorted(lst)\r\ncounter = 0\r\nfor item in lst:\r\n    counter+=1\r\nfor row in datalist:\r\n    if row[3] == None:\r\n        continue\r\n    for num in lst:\r\n        if row[3] == num:\r\n            returnlst.append([num, \"Sect. \", row[5], \"Row \", row[7], \"Pos. \", row[8]])\r\n            lst.remove(num)\r\n        else:\r\n            continue\r\nfor item in lst:\r\n    returnlst.append([item, \"Sect. \", \"ERROR \", \"Row \", \"ERROR \",\"Pos. \",\"ERROR \"])\r\nnumber = 0\r\n#I use itemgetter here to sort by the section of the stadium by default\r\nreturnlst = sorted(returnlst, key=itemgetter(2))\r\nfor item in returnlst:\r\n    print(item[0], item[1] + item[2], item[3] + item[4], item[5] + item[6])\r\n    number+=1\r\nif counter == number:\r\n    print(\"Good to go\")\r\nelse:\r\n    print(\"error somewhere\")\r\n#Additional code if people want to see phones by row, section, or sort the list by number\r\n# sortask = input(\"row, section, or #(number) \")\r\n# if sortask.lower() == \"section\":\r\n#     #Below is categorized by section\r\n#     returnlst = sorted(returnlst, key=itemgetter(2))\r\n#     for item in returnlst:\r\n#         print(item[0], item[1] + item[2], item[3] + item[4], item[5] + item[6])\r\n#         number+=1\r\n# elif sortask.lower() == \"row\":\r\n#     #Below is categorized by row\r\n#     returnlst = sorted(returnlst, key=itemgetter(4))\r\n#     for item in returnlst:\r\n#         print(item[0], item[1] + item[2], item[3] + item[4], item[5] + item[6])\r\n# elif sortask.lower() == \"#\" or sortask.lower() == \"number\":\r\n#     returnlst = sorted(returnlst, key=itemgetter(0))\r\n#     for item in returnlst:\r\n#         print(item[0], item[1] + item[2], item[3] + item[4], item[5] + item[6])
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/SAP.py b/SAP.py
+--- a/SAP.py	(revision ea1f0013256cfaed0459efed3261176cb5caf891)
++++ b/SAP.py	(date 1628544815290)
+@@ -1,10 +1,12 @@
+ from operator import itemgetter
+ import csv
+-f = open(r"C:\Users\Justin\Downloads\UE Locations for AT&T and pCell Testing at SAP  - June 29, 2021.csv", "r")
++f = open(r"C:\Users\Justin Cheok\Downloads\UE Locations for AT&T and pCell Testing at SAP  - July 20 - Aug 9, 2021.csv", "r")
+ csv_f = csv.reader(f)
+ datalist = list(csv_f)
+ lst = []
+ returnlst = []
++leftatlab = []
++brokenphones = []
+ print("Enter the # in a comma seperated list or the IPs, then enter 'done' when done: ")
+ while True:
+     inp = input()
+@@ -33,36 +35,42 @@
+         continue
+     for num in lst:
+         if row[3] == num:
+-            returnlst.append([num, "Sect. ", row[5], "Row ", row[7], "Pos. ", row[8]])
+-            lst.remove(num)
++            if int(num) in brokenphones:
++                lst.remove(num)
++                continue
++            elif int(num) in leftatlab:
++                returnlst.append([num, "Left at Lab"])
++            else:
++                returnlst.append([num, "Sect. ", row[5], "Row ", row[6], "Pos. ", row[7]])
++                lst.remove(num)
+         else:
+             continue
+ for item in lst:
+     returnlst.append([item, "Sect. ", "ERROR ", "Row ", "ERROR ","Pos. ","ERROR "])
+ number = 0
+ #I use itemgetter here to sort by the section of the stadium by default
+-returnlst = sorted(returnlst, key=itemgetter(2))
+-for item in returnlst:
+-    print(item[0], item[1] + item[2], item[3] + item[4], item[5] + item[6])
+-    number+=1
+-if counter == number:
+-    print("Good to go")
+-else:
+-    print("error somewhere")
+-#Additional code if people want to see phones by row, section, or sort the list by number
+-# sortask = input("row, section, or #(number) ")
+-# if sortask.lower() == "section":
+-#     #Below is categorized by section
+-#     returnlst = sorted(returnlst, key=itemgetter(2))
+-#     for item in returnlst:
+-#         print(item[0], item[1] + item[2], item[3] + item[4], item[5] + item[6])
+-#         number+=1
+-# elif sortask.lower() == "row":
+-#     #Below is categorized by row
+-#     returnlst = sorted(returnlst, key=itemgetter(4))
+-#     for item in returnlst:
+-#         print(item[0], item[1] + item[2], item[3] + item[4], item[5] + item[6])
+-# elif sortask.lower() == "#" or sortask.lower() == "number":
+-#     returnlst = sorted(returnlst, key=itemgetter(0))
+-#     for item in returnlst:
+-#         print(item[0], item[1] + item[2], item[3] + item[4], item[5] + item[6])
+\ No newline at end of file
++# returnlst = sorted(returnlst, key=itemgetter(2))
++# for item in returnlst:
++#     print(item[0], item[1] + item[2], item[3] + item[4], item[5] + item[6])
++#     number+=1
++# if counter == number:
++#     print("Good to go")
++# else:
++#     print("error somewhere")
++#Additional code if people want to see phones by row, section, or sort the list by number
++sortask = input("row, section, or #(number) ")
++if sortask.lower() == "section":
++    #Below is categorized by section
++    returnlst = sorted(returnlst, key=itemgetter(2))
++    for item in returnlst:
++        print(item[0], item[1] + item[2], item[3] + item[4], item[5] + item[6])
++        number+=1
++elif sortask.lower() == "row":
++    #Below is categorized by row
++    returnlst = sorted(returnlst, key=itemgetter(4))
++    for item in returnlst:
++        print(item[0], item[1] + item[2], item[3] + item[4], item[5] + item[6])
++elif sortask.lower() == "#" or sortask.lower() == "number":
++    returnlst = sorted(returnlst, key=itemgetter(0))
++    for item in returnlst:
++        print(item[0], item[1] + item[2], item[3] + item[4], item[5] + item[6])
+\ No newline at end of file
