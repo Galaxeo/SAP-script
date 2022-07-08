@@ -1,6 +1,6 @@
 from operator import itemgetter
 import csv
-f = open(r"C:\Users\Justin Cheok\Downloads\UE Locations for AT&T and pCell Testing at SAP  - July 20 - Aug 9, 2021.csv", "r")
+f = open(r"C:\Users\Justin\Downloads\UE Locations for AT&T and pCell Testing at SAP  - July 20 - Aug 9, 2021.csv", "r")
 csv_f = csv.reader(f)
 datalist = list(csv_f)
 lst = []
