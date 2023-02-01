@@ -1,7 +1,0 @@
-hopefully this here
-git clone INSERTLINK - this command is to take a respository and put it onto your computer
-git add file - this command is to add a file to the respository
-git commit -m "comment" - this command commits the change, and adds the message with -m, leaving the message in quotations
-git push - this pushes the commit
-git pull - this pulls whatever changes
-git status - checks the differences between what online got and what i gopt
